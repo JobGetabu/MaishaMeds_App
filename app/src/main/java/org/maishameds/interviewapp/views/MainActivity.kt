@@ -1,11 +1,17 @@
 package org.maishameds.interviewapp.views
 
+import android.app.ActivityOptions
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.animation.AnimationUtils
+import android.view.animation.LayoutAnimationController
 import android.widget.Toast
+import androidx.annotation.AnimRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.maishameds.interviewapp.R
 import org.maishameds.interviewapp.adapter.PostsAdapter
@@ -23,9 +29,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        adapter = PostsAdapter { position, item ->
-            Toast.makeText(this@MainActivity, "${item?.title}", Toast.LENGTH_SHORT).show()
-        }
+        adapter = PostsAdapter(this)
 
         post_list.setHasFixedSize(true)
         post_list.adapter = adapter
@@ -40,6 +44,7 @@ class MainActivity : AppCompatActivity() {
                     Log.d(Tag, "SUCCESS ${it.data}")
 
                     adapter.setItems(it.data)
+                    post_list.loadAnim()
 
                 }
 
@@ -57,4 +62,15 @@ class MainActivity : AppCompatActivity() {
         })
 
     }
+}
+
+//TODO add to ViewExtensions class
+fun RecyclerView.loadAnim(@AnimRes animRes: Int = R.anim.layout_anim_parent_bottom) {
+    val animation: LayoutAnimationController =
+        AnimationUtils.loadLayoutAnimation(
+            context,
+            animRes
+        )
+
+    layoutAnimation = animation
 }
